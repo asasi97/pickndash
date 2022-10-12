@@ -18,6 +18,7 @@ function AddCart() {
   const [purchaseEmoji, setPurchaseEmoji] = useState(false);
   const [emoji, setEmoji] = useState(null);
   const [cart, setCart] = useState([]);
+  const [cartTotal, setCartTotal] = useState(0);
 
   var newCart = [];
 
@@ -363,6 +364,7 @@ function AddCart() {
     // console.log(products);
     // setCart(products);
     // setPurchaseEmoji(true);
+
     runObjectDetectionHandPose();
   }, []);
 
@@ -390,17 +392,23 @@ function AddCart() {
     tracks.forEach((track) => track.stop());
     setPurchaseEmoji(true);
     console.log("Final Cart - ", cart);
+
+    setCartTotal(cart.reduce((a, v) => (a = a + v.price), 0));
+    console.log(
+      "Cart Total - ",
+      products.reduce((a, v) => (a = a + v.price), 0)
+    );
   };
 
   return (
     <div>
       {purchaseEmoji ? (
-        <div>
+        <div className="checkout">
           <div
             style={{
               fontSize: "100px",
-              paddingTop: "150px",
-              paddingBottom: "50px",
+              paddingTop: "100px",
+              paddingBottom: "25px",
             }}>
             Thanks for Shopping
           </div>
@@ -411,13 +419,13 @@ function AddCart() {
           <div
             style={{
               fontSize: "50px",
-              paddingTop: "50px",
-              paddingBottom: "20px",
+              paddingTop: "25px",
+              paddingBottom: "15px",
             }}>
             Cart
           </div>
 
-          <table style={{}}>
+          <table>
             <thead>
               <tr>
                 <th>Product</th>
@@ -433,6 +441,34 @@ function AddCart() {
               ))}
             </tbody>
           </table>
+
+          <div
+            style={{
+              fontSize: "30px",
+              paddingTop: "25px",
+              paddingBottom: "15px",
+            }}>
+            Total - AED {cartTotal}
+          </div>
+          <div>
+            <div
+              style={{
+                fontSize: "30px",
+                paddingTop: "25px",
+                paddingBottom: "15px",
+              }}>
+              Based on your purchases you may also like
+            </div>
+            <table className="recommenderTable">
+              <tbody>
+                <tr>
+                  {cart?.map((item) => (
+                    <td key={item.id}>{item.recommended}</td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       ) : (
         <div>
